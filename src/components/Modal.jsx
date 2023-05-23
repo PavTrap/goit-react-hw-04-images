@@ -1,37 +1,99 @@
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import css from './styles.module.css';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handlKeyDown);
-  }
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handlKeyDown);
-  }
 
-  handlKeyDown = e => {
-    console.log(e.code);
-    if (e.code === 'Escape') {
-      this.props.onClose();
-    }
-  };
-
-  handlBackDropClick = e => {
+export const Modal = ({ onClose, children }) => {
+  const handlBackDropClick = e => {
     if (e.currentTarget === e.target) {
-      this.props.onClose();
+      onClose();
     }
   };
+  
+  
+  useEffect(() => {
+    const handlKeyDown = e => {
+        if (e.code === 'Escape') {
+          onClose();
+        }
+      };
+      window.addEventListener('keydown', handlKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handlKeyDown);
+      }
+  }, [onClose]);
 
-  render() {
+
+  
+
     return createPortal(
-      <div className={css.Overlay} onClick={this.handlBackDropClick}>
-        <div className={css.Modal}>{this.props.children}</div>
+      <div className={css.Overlay} onClick={handlBackDropClick}>
+        <div className={css.Modal}>{children}</div>
       </div>,
       modalRoot
     );
-  }
 }
+export default Modal;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export default class Modal extends Component {
+//   componentDidMount() {
+//     window.addEventListener('keydown', this.handlKeyDown);
+//   }
+
+//   componentWillUnmount() {
+//     window.removeEventListener('keydown', this.handlKeyDown);
+//   }
+
+//   handlKeyDown = e => {
+//     console.log(e.code);
+//     if (e.code === 'Escape') {
+//       this.props.onClose();
+//     }
+//   };
+
+//   handlBackDropClick = e => {
+//     if (e.currentTarget === e.target) {
+//       this.props.onClose();
+//     }
+//   };
+
+//   render() {
+//     return createPortal(
+//       <div className={css.Overlay} onClick={this.handlBackDropClick}>
+//         <div className={css.Modal}>{this.props.children}</div>
+//       </div>,
+//       modalRoot
+//     );
+//   }
+// }
